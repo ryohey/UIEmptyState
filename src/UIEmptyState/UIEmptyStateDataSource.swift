@@ -42,45 +42,45 @@ public protocol UIEmptyStateDataSource: class {
      cause the delegation of button and view touches to no longer work,
      unless you implement those yourself as well.
      */
-    var emptyStateView: UIView { get }
+    func emptyStateView(for view: UIView) -> UIView
     
     /**
      Determines whether the `emptyStateView` should adjust to be shown properly inside by
      not extending the view past the navigation bar and tab bar of a navigation controller.
      */
-    var emptyStateViewAdjustsToFitBars: Bool { get }
+    func emptyStateViewAdjustsToFitBars(for view: UIView) -> Bool
     
     /**
      Determines the title for the Empty View, by default this just returns an intro message,
      override for custom title
      */
-    var emptyStateTitle: NSAttributedString { get }
+    func emptyStateTitle(for view: UIView) -> NSAttributedString
     
     /**
      Determines the image which will be used inside the Empty State View's image view, default value is nil
      */
-    var emptyStateImage: UIImage? { get }
+    func emptyStateImage(for view: UIView) -> UIImage?
     
     /**
      Determines the size of the image view, by default this will return nil which means
      that the imageview size will just be 100x100
      */
-    var emptyStateImageSize: CGSize? { get }
+    func emptyStateImageSize(for view: UIView) -> CGSize?
     
     /**
      Determines the tintColor to apply to the Empty State View's image view
      */
-    var emptyStateImageViewTintColor: UIColor? { get }
+    func emptyStateImageViewTintColor(for view: UIView) -> UIColor?
 
     /**
      Determines the title for the button of the Empty State View, by default this is nil
      */
-    var emptyStateButtonTitle: NSAttributedString? { get }
+    func emptyStateButtonTitle(for view: UIView) -> NSAttributedString?
     
     /**
      Determines the image for the button, by default this will return nil
      */
-    var emptyStateButtonImage: UIImage? { get }
+    func emptyStateButtonImage(for view: UIView) -> UIImage?
     
     /**
      Determines the size of the button, by default it will constrain the view to the size
@@ -89,31 +89,31 @@ public protocol UIEmptyStateDataSource: class {
      Implement this method to send a custom size for the button,
      useful when adding a buttonImage to the button
      */
-    var emptyStateButtonSize: CGSize? { get }
+    func emptyStateButtonSize(for view: UIView) -> CGSize?
     
     /**
      Determines the message which will be displayed in the detail view of the empty state view,
      by default this will return an intro message
      */
-    var emptyStateDetailMessage: NSAttributedString? { get }
+    func emptyStateDetailMessage(for view: UIView) -> NSAttributedString?
     
     /// Determines the amount of spacing between the views, by default this is 12
-    var emptyStateViewSpacing: CGFloat { get }
+    func emptyStateViewSpacing(for view: UIView) -> CGFloat
     
     /**
      Determines the vertical offset space, by default Empty State View is centered in the vertical axis
      */
-    var emptyStateViewCenterYOffset: CGFloat? { get }
+    func emptyStateViewCenterYOffset(for view: UIView) -> CGFloat?
     
     /// Determines the background color for the emptyStateView, by default this value is UIColor.clear
-    var emptyStateBackgroundColor: UIColor { get }
+    func emptyStateBackgroundColor(for view: UIView) -> UIColor
     
     /**
      Whether the empty state view allows scrolling or not, by default this is false
  
      **Note:** This is only called when view is displayed, if not displayed scrolling will be enabled for the table view
      */
-    var emptyStateViewCanScroll: Bool { get }
+    func emptyStateViewCanScroll(for view: UIView) -> Bool
     
     /**
      Whether the empty state view should animate or not
@@ -121,7 +121,7 @@ public protocol UIEmptyStateDataSource: class {
      **Note:**
      This is called whenever the empty state view will show, if false; no animation will occur. Default = true
      */
-    var emptyStateViewCanAnimate: Bool { get }
+    func emptyStateViewCanAnimate(for view: UIView) -> Bool
     
     /**
      Whether the empty state view animates every time it is shown
@@ -132,7 +132,7 @@ public protocol UIEmptyStateDataSource: class {
      returning false means that only the inital animation is shown.
      To turn off animation in general use `emptyStateViewCanAnimate`
     */
-    var emptyStateViewAnimatesEverytime: Bool { get }
+    func emptyStateViewAnimatesEverytime(for view: UIView) -> Bool
     
     /**
      The amount of time the empty state view should animate for
@@ -140,7 +140,7 @@ public protocol UIEmptyStateDataSource: class {
      **Note:**
      This is called whenever the empty state view will show, Default = 0.5
      */
-    var emptyStateViewAnimationDuration: TimeInterval { get }
+    func emptyStateViewAnimationDuration(for view: UIView) -> TimeInterval
     
     /**
      The animation function for the views in the empty state view
@@ -191,74 +191,72 @@ extension UIEmptyStateDataSource where Self: UIViewController {
     }
     
     /// Default implementation of `emptystateView` returns a `UIEmptyStateView`
-    public var emptyStateView: UIView {
-        get {
-            let emptyStateView = UIEmptyStateView(frame: self.view.frame, title: emptyStateTitle)
-            // Call and assign the data source methods
-            emptyStateView.image = emptyStateImage
-            emptyStateView.imageSize = emptyStateImageSize
-            emptyStateView.imageViewTintColor = emptyStateImageViewTintColor
-            emptyStateView.buttonTitle = emptyStateButtonTitle
-            emptyStateView.buttonImage = emptyStateButtonImage
-            emptyStateView.buttonSize = emptyStateButtonSize
-            emptyStateView.detailMessage = emptyStateDetailMessage
-            emptyStateView.spacing = emptyStateViewSpacing
-            emptyStateView.centerYOffset = emptyStateViewCenterYOffset
-            emptyStateView.backgroundColor = emptyStateBackgroundColor
-            // Some auto resize constraints
-            emptyStateView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            return emptyStateView
-        }
+    public func emptyStateView(for view: UIView) -> UIView {
+        let emptyStateView = UIEmptyStateView(frame: self.view.frame, title: emptyStateTitle(for: view))
+        // Call and assign the data source methods
+        emptyStateView.image = emptyStateImage(for: view)
+        emptyStateView.imageSize = emptyStateImageSize(for: view)
+        emptyStateView.imageViewTintColor = emptyStateImageViewTintColor(for: view)
+        emptyStateView.buttonTitle = emptyStateButtonTitle(for: view)
+        emptyStateView.buttonImage = emptyStateButtonImage(for: view)
+        emptyStateView.buttonSize = emptyStateButtonSize(for: view)
+        emptyStateView.detailMessage = emptyStateDetailMessage(for: view)
+        emptyStateView.spacing = emptyStateViewSpacing(for: view)
+        emptyStateView.centerYOffset = emptyStateViewCenterYOffset(for: view)
+        emptyStateView.backgroundColor = emptyStateBackgroundColor(for: view)
+        // Some auto resize constraints
+        emptyStateView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        return emptyStateView
     }
     
     /// Default implementation of `emptyStateViewAdjustsToFitBars` returns `true`
-    public var emptyStateViewAdjustsToFitBars: Bool { get { return true } }
+    public func emptyStateViewAdjustsToFitBars(for view: UIView) -> Bool { return true }
     
     /// Default implementation of `emptyStateTitle`, returns an intro title
-    public var emptyStateTitle: NSAttributedString { get { return NSAttributedString(string: "Empty") } }
+    public func emptyStateTitle(for view: UIView) -> NSAttributedString { return NSAttributedString(string: "Empty") }
     
     /// Default implementation of `emptyStateImage`, returns nil
-    public var emptyStateImage: UIImage? { get { return nil } }
+    public func emptyStateImage(for view: UIView) -> UIImage? { return nil }
     
     /// Default implementation of `emptyStateImageSize`, returns nil
-    public var emptyStateImageSize: CGSize? { get { return nil } }
+    public func emptyStateImageSize(for view: UIView) -> CGSize? { return nil }
     
     /// Default implementation of `emptyStateImageViewTintColor, returns nil
-    public var emptyStateImageViewTintColor: UIColor? { get { return nil }}
+    public func emptyStateImageViewTintColor(for view: UIView) -> UIColor? { return nil }
 
     /// Default implementation of `emptyStateCenterYOffset`, returns nil
-    public var emptyStateViewCenterYOffset: CGFloat? { get { return nil }}
+    public func emptyStateViewCenterYOffset(for view: UIView) -> CGFloat? { return nil }
     
     /// Default implementation of `emptyStateButtonTitle`, returns nil
-    public var emptyStateButtonTitle: NSAttributedString? { get { return nil } }
+    public func emptyStateButtonTitle(for view: UIView) -> NSAttributedString? { return nil }
     
     /// Default implementation of `emptyStateButtonImage`, returns nil
-    public var emptyStateButtonImage: UIImage? { get { return nil } }
+    public func emptyStateButtonImage(for view: UIView) -> UIImage? { return nil }
     
     /// Default implementation of `emptyStateButtonSize`, returns nil,
     /// thus size will be calculated using size of `buttonTitle`
-    public var emptyStateButtonSize: CGSize? { get { return nil } }
+    public func emptyStateButtonSize(for view: UIView) -> CGSize? { return nil }
     
     /// Default implementation of `emptyStateDetailMessage`, returns nil
-    public var emptyStateDetailMessage: NSAttributedString? { get { return nil } }
+    public func emptyStateDetailMessage(for view: UIView) -> NSAttributedString? { return nil }
     
     /// Default implementation of `emptyStateViewSpacing`, returns 12
-    public var emptyStateViewSpacing: CGFloat { get { return 12 } }
+    public func emptyStateViewSpacing(for view: UIView) -> CGFloat { return 12 }
     
     /// Default implementation of `emptyStateBackgroundColor`, returns `UIColor.clear`
-    public var emptyStateBackgroundColor: UIColor { get { return .clear } }
+    public func emptyStateBackgroundColor(for view: UIView) -> UIColor { return .clear }
     
     /// Default implementation of `emptyStateViewCanScroll`, returns `false`
-    public var emptyStateViewCanScroll: Bool { get { return false } }
+    public func emptyStateViewCanScroll(for view: UIView) -> Bool { return false }
     
     /// Default implementation of `emptyStateViewCanAnimate`, returns `true`
-    public var emptyStateViewCanAnimate: Bool { get { return true } }
+    public func emptyStateViewCanAnimate(for view: UIView) -> Bool { return true }
     
     /// Default implementation of `emptyStateViewAnimatesEverytime`, returns `false`
-    public var emptyStateViewAnimatesEverytime: Bool { get { return false } }
+    public func emptyStateViewAnimatesEverytime(for view: UIView) -> Bool { return false }
     
     /// Default implementation of `emptyStateViewAnimationDuration`, returns `0.5`
-    public var emptyStateViewAnimationDuration: TimeInterval { get { return 0.5 } }
+    public func emptyStateViewAnimationDuration(for view: UIView) -> TimeInterval { return 0.5 }
     
     /// Default implementation of `emptyStateViewAnimation`, implements a simple animation
     public func emptyStateViewAnimation(for view: UIView, animationDuration: TimeInterval,

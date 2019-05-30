@@ -77,14 +77,14 @@ extension UIViewController {
             emptyView?.isHidden = true
             tableView.isScrollEnabled = true
             // Also return edges for extended layout to the default values, if adjusted
-            if emptyStateDataSource?.emptyStateViewAdjustsToFitBars ?? false {
+            if emptyStateDataSource?.emptyStateViewAdjustsToFitBars(for: tableView) ?? false {
                 self.edgesForExtendedLayout = .all
             }
             return
         }
         
         // Check whether scrolling for tableview is allowed or not
-        tableView.isScrollEnabled = source.emptyStateViewCanScroll
+        tableView.isScrollEnabled = source.emptyStateViewCanScroll(for: tableView)
         
         finishReload(for: source, in: tableView)
     }
@@ -108,14 +108,14 @@ extension UIViewController {
                 emptyView?.isHidden = true
                 collectionView.isScrollEnabled = true
                 // Also return edges for extended layout to the default values, if adjusted
-                if emptyStateDataSource?.emptyStateViewAdjustsToFitBars ?? false {
+                if emptyStateDataSource?.emptyStateViewAdjustsToFitBars(for: collectionView) ?? false {
                     self.edgesForExtendedLayout = .all
                 }
                 return
         }
         
         // Check to see if scrolling is enabled
-        collectionView.isScrollEnabled = source.emptyStateViewCanScroll
+        collectionView.isScrollEnabled = source.emptyStateViewCanScroll(for: collectionView)
         
         finishReload(for: source, in: collectionView)
         
@@ -153,7 +153,7 @@ extension UIViewController {
         // and then return
         guard #available(iOS 11.0, *) else {
             // Adjust to fit bars if allowed
-            if source.emptyStateViewAdjustsToFitBars {
+            if source.emptyStateViewAdjustsToFitBars(for: view) {
                 self.edgesForExtendedLayout = []
             } else {
                 self.edgesForExtendedLayout = .all
@@ -164,7 +164,7 @@ extension UIViewController {
         // iOS 11.0+ is available, thus use new safeAreaLayoutGuide, but only if adjustesToFitBars is true.
         // The reason for this is safeAreaLayoutGuide will take into account any bar that may be used
         // If for some reason user doesn't want to adjust to bars, then keep the old center constraints
-        if source.emptyStateViewAdjustsToFitBars {
+        if source.emptyStateViewAdjustsToFitBars(for: view) {
             // Adjust constraint to fit new big title bars, etc
             centerX.isActive = false
             centerX = view.centerXAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.centerXAnchor)
@@ -188,25 +188,25 @@ extension UIViewController {
             createdView.isHidden = false
             guard let view = createdView as? UIEmptyStateView else { return createdView }
             
-            view.backgroundColor = source.emptyStateBackgroundColor
-            view.title = source.emptyStateTitle
-            view.image = source.emptyStateImage
-            view.imageSize = source.emptyStateImageSize
-            view.imageViewTintColor = source.emptyStateImageViewTintColor
-            view.buttonTitle = source.emptyStateButtonTitle
-            view.buttonImage = source.emptyStateButtonImage
-            view.buttonSize = source.emptyStateButtonSize
-            view.detailMessage = source.emptyStateDetailMessage
-            view.spacing = source.emptyStateViewSpacing
-            view.centerYOffset = source.emptyStateViewCenterYOffset
-            view.backgroundColor = source.emptyStateBackgroundColor
+            view.backgroundColor = source.emptyStateBackgroundColor(for: view)
+            view.title = source.emptyStateTitle(for: view)
+            view.image = source.emptyStateImage(for: view)
+            view.imageSize = source.emptyStateImageSize(for: view)
+            view.imageViewTintColor = source.emptyStateImageViewTintColor(for: view)
+            view.buttonTitle = source.emptyStateButtonTitle(for: view)
+            view.buttonImage = source.emptyStateButtonImage(for: view)
+            view.buttonSize = source.emptyStateButtonSize(for: view)
+            view.detailMessage = source.emptyStateDetailMessage(for: view)
+            view.spacing = source.emptyStateViewSpacing(for: view)
+            view.centerYOffset = source.emptyStateViewCenterYOffset(for: view)
+            view.backgroundColor = source.emptyStateBackgroundColor(for: view)
             
             // Animate now
-            if source.emptyStateViewCanAnimate && source.emptyStateViewAnimatesEverytime {
+            if source.emptyStateViewCanAnimate(for: view) && source.emptyStateViewAnimatesEverytime(for: view) {
                 DispatchQueue.main.async {
                     source.emptyStateViewAnimation(
                         for: view,
-                        animationDuration: source.emptyStateViewAnimationDuration,
+                        animationDuration: source.emptyStateViewAnimationDuration(for: view),
                         completion: { finished in
                             self.emptyStateDelegate?.emptyStateViewAnimationCompleted(for: view, didFinish: finished)
                         }
@@ -218,7 +218,7 @@ extension UIViewController {
             
         } else {
             // We can create the view now
-            let newView = source.emptyStateView
+            let newView = source.emptyStateView(for: view)
             // Call the will show delegate
             self.emptyStateDelegate?.emptyStateViewWillShow(view: newView)
             // Add to emptyStateView property
@@ -227,11 +227,11 @@ extension UIViewController {
             view.addSubview(newView)
             view.bringSubviewToFront(newView)
             // Animate now
-            if source.emptyStateViewCanAnimate {
+            if source.emptyStateViewCanAnimate(for: view) {
                 DispatchQueue.main.async {
                     source.emptyStateViewAnimation(
                         for: newView,
-                        animationDuration: source.emptyStateViewAnimationDuration,
+                        animationDuration: source.emptyStateViewAnimationDuration(for: view),
                         completion: { finished in
                             self.emptyStateDelegate?.emptyStateViewAnimationCompleted(for: newView, didFinish: finished)
                         }
