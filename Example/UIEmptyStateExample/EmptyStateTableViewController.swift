@@ -27,24 +27,24 @@ class EmptyStateTableViewController: UITableViewController, UIEmptyStateDelegate
     }
     
     // MARK: - Empty State Data Source
-    
-    var emptyStateImage: UIImage? {
+
+    func emptyStateImage(for view: UIView) -> UIImage? {
         return #imageLiteral(resourceName: "emptyPokemon")
     }
 
-    var emptyStateTitle: NSAttributedString {
+    func emptyStateTitle(for view: UIView) -> NSAttributedString {
         let attrs = [NSAttributedString.Key.foregroundColor: UIColor(red: 0.882, green: 0.890, blue: 0.859, alpha: 1.00),
                      NSAttributedString.Key.font: UIFont.systemFont(ofSize: 22)]
         return NSAttributedString(string: "No Pokemon caught!", attributes: attrs)
     }
-    
-    var emptyStateButtonTitle: NSAttributedString? {
+
+    func emptyStateButtonTitle(for view: UIView) -> NSAttributedString? {
         let attrs = [NSAttributedString.Key.foregroundColor: UIColor.white,
                      NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
         return NSAttributedString(string: "Catch'em All", attributes: attrs)
     }
-    
-    var emptyStateButtonSize: CGSize? {
+
+    func emptyStateButtonSize(for view: UIView) -> CGSize? {
         return CGSize(width: 100, height: 40)
     }
 

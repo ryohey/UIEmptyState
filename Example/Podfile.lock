@@ -1,5 +1,5 @@
 PODS:
-  - UIEmptyState (4.0.0)
+  - UIEmptyState (4.0.1)
 
 DEPENDENCIES:
   - UIEmptyState (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  UIEmptyState: a299e655ecb6fc077dfb503c375ef9a023103240
+  UIEmptyState: 6a407ddaac30ff1a0a6bffc2a746bad59f6b2f1a
 
 PODFILE CHECKSUM: 2410e5e41e5d4570ddd34538c5ba93d5d35ce08c
 
